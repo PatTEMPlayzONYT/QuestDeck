@@ -1,0 +1,31 @@
+#!/bin/bash
+# Starts the Steam client from inside a session (the desktop's menu entries and the per-game
+# launchers droiddeck-desktop-games writes):
+#   droiddeck-steam-launch desktop [appid|steam-url]     Steam's desktop UI, optionally a game
+#   droiddeck-steam-launch bigpicture [appid|steam-url]  Big Picture
+#
+# The desktop (KDE Plasma) composites in software and has no dma-buf, so the client's own Vulkan
+# window - and any game it starts - would die at its first frame there. The request goes to the app
+# instead, which ends the desktop and starts a Steam session under gamescope in its place, as
+# SteamOS's desktop hands Steam back to Gaming Mode.
+set -u
+ui=${1:-desktop}
+target=${2:-}
+case $ui in desktop|bigpicture) ;; *) echo "usage: $0 desktop|bigpicture [appid|steam://url]" >&2; exit 64 ;; esac
+url=
+case $target in
+  "") ;;
+  steam://*) url=$target ;;
+  *[!0-9]*) echo "not an app id or steam:// URL: $target" >&2; exit 64 ;;
+  *) url=steam://rungameid/$target ;;
+esac
+
+# Ask the app for a Steam session.
+dir=${BL_LAUNCH_DIR:-}
+if [ -z "$dir" ] || [ ! -d "$dir" ]; then
+  echo "droiddeck-steam-launch: not inside a DroidDeck session (BL_LAUNCH_DIR unset)" >&2
+  exit 69
+fi
+# Written whole, then renamed: the app reads it on close, never half-written.
+printf 'ui=%s\nurl=%s\n' "$ui" "$url" > "$dir/steam-launch.tmp" && mv -f "$dir/steam-launch.tmp" "$dir/steam-launch"
+echo "droiddeck-steam-launch: asked the app for Steam ($ui${url:+, $url})"
