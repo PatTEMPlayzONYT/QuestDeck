@@ -1,17 +1,32 @@
- <p align="center">
+# QuestDeck
+
+<p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="artwork/droiddeck-banner-dark.svg">
-    <img alt="DroidDeck" src="artwork/droiddeck-banner-light.svg" width="100%">
+    <img alt="QuestDeck" src="artwork/droiddeck-banner-light.svg" width="100%">
   </picture>
+</p>
+
+<p align="center">
+  <a href="https://github.com/PatTEMPlayzONYT/QuestDeck/releases">
+    <img src="https://img.shields.io/github/downloads/PatTEMPlayzONYT/QuestDeck/total?label=Downloads&color=blue" alt="Total GitHub release downloads">
+  </a>
+  <img src="https://raw.githubusercontent.com/PatTEMPlayzONYT/QuestDeck/traffic-data/badge.svg" alt="QuestDeck repository views">
 </p>
 
 *As part of this QuestDeck project, it might not happen, but I'm going to try to bring SteamVR support to this.*
 
 QuestDeck is my Quest-focused fork of DroidDeck, aiming to bring the SteamOS experience to the Meta Quest 3 & 3S: Valve's Steam client in Big Picture, with Windows games through Valve's ARM64 Proton.
 
-<p align="center"><a href="https://discord.gg/JRGAvawjsm"><img src="https://img.shields.io/badge/Discord-Join%20the%20community-5865F2?logo=discord&logoColor=white" alt="Join the DroidDeck Discord"></a></p>
+<p align="center">
+  <a href="https://discord.gg/JRGAvawjsm">
+    <img src="https://img.shields.io/badge/Discord-Join%20the%20community-5865F2?logo=discord&logoColor=white" alt="Join the DroidDeck Discord">
+  </a>
+</p>
 
-<p align="center"><img src="docs/releases/media/0.2.0/launch-into-steam.gif" width="80%" alt="Tapping DroidDeck on the Android home screen and landing in Steam Big Picture"></p>
+<p align="center">
+  <img src="docs/releases/media/0.2.0/launch-into-steam.gif" width="80%" alt="Tapping DroidDeck on the Android home screen and landing in Steam Big Picture">
+</p>
 
 > Note: DroidDeck/QuestDeck does not have a stand-alone website. Do not click on any download links from websites claiming to be the DroidDeck team.
 
