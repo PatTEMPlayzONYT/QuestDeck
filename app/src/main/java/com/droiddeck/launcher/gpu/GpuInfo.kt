@@ -26,6 +26,8 @@ data class GpuInfo(
     val kgslName: String = "",
     /** Where [model] came from: "kernel", "vulkan" or "platform", "" when unknown. */
     val modelSource: String = "",
+    /** A Meta Quest headset (Quest 3, 3S): its Auto default is the pinned DD-Turnip release, see DriverPairs.recommendedKey. */
+    val quest: Boolean = false,
 ) {
     enum class Family(val label: String) {
         A8XX("Adreno 8xx"),
@@ -101,8 +103,14 @@ data class GpuInfo(
                 model = model, family = family, soc = soc,
                 oneUi8Gen2 = samsung && model == 740,
                 kgslName = raw.orEmpty(), modelSource = source,
+                quest = isQuest(Build.MANUFACTURER, Build.MODEL),
             )
         }
+
+        /** Meta Quest headsets report manufacturer "Oculus" (newer builds may say "Meta") and a model such as "Quest 3" or "Quest 3S". */
+        internal fun isQuest(manufacturer: String?, model: String?): Boolean =
+            (manufacturer.orEmpty().equals("oculus", ignoreCase = true) || manufacturer.orEmpty().equals("meta", ignoreCase = true)) &&
+                model.orEmpty().trim().startsWith("quest", ignoreCase = true)
 
         private fun threeDigits(text: String): Int = Regex("""(\d{3})""").find(text)?.groupValues?.get(1)?.toIntOrNull() ?: 0
 

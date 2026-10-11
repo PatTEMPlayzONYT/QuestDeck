@@ -26,6 +26,9 @@ object DriverPairs {
     const val DD_TURNIP = "dd-turnip"
     /** Each DD-Turnip release is its own pair: "dd-turnip:DD-Turnip-v0.1.0". */
     fun ddTurnip(tag: String) = "$DD_TURNIP:$tag"
+    /** The DD-Turnip release Auto pins on a Meta Quest (a Drivers-CI tag, `DD-Turnip-v0.1.1.zip`). */
+    const val QUEST_DD_TURNIP_TAG = "DD-Turnip-v0.1.1"
+    val QUEST_DD_TURNIP = ddTurnip(QUEST_DD_TURNIP_TAG)
 
     class DriverPair(
         val key: String,
@@ -90,9 +93,17 @@ object DriverPairs {
      * official DD-Turnip release on the Adreno 840 (840 and 840v2), WinNative Balanced on the other
      * 8xx (Banners' A8xx builds still break on some first boots) and on an 840 while no DD-Turnip
      * release is listed, the OneUI build for an 8 Gen 2 under One UI, the patched test builds for
-     * the 710/720/722, and upstream Banners-Turnip for the rest. Null when nothing fits (not Adreno).
+     * the 710/720/722, and upstream Banners-Turnip for the rest. A Meta Quest takes the pinned
+     * DD-Turnip v0.1.1 whenever it is listed. Null when nothing fits (not Adreno).
      */
-    fun recommendedKey(gpu: GpuInfo, pairs: List<DriverPair>): String? = when (gpu.family) {
+    fun recommendedKey(gpu: GpuInfo, pairs: List<DriverPair>): String? {
+        // A Quest takes exactly DD-Turnip v0.1.1, never a newer DD-Turnip. While that release is not
+        // listed (not checked yet, offline, or half published) Auto falls back to the usual pick.
+        if (gpu.quest && gpu.family != Family.NOT_ADRENO && pairs.any { it.key == QUEST_DD_TURNIP && it.complete }) return QUEST_DD_TURNIP
+        return defaultKey(gpu, pairs)
+    }
+
+    private fun defaultKey(gpu: GpuInfo, pairs: List<DriverPair>): String? = when (gpu.family) {
         Family.NOT_ADRENO -> null
         Family.A8XX -> if (gpu.model == 840) newestDdTurnip(pairs) ?: WN_BALANCED else WN_BALANCED
         Family.A7XX_LOW -> BANNER_710

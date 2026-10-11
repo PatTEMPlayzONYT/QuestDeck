@@ -114,4 +114,42 @@ class DriverPairsTest {
         assertEquals(DriverPairs.WN_BALANCED, DriverPairs.recommendedKey(gpu(825), pairs))
         assertEquals(DriverPairs.BANNER, DriverPairs.recommendedKey(gpu(740), pairs))
     }
+
+    private fun quest(model: Int = 740) = GpuInfo("Adreno $model", model, GpuInfo.familyOf(true, model), "", false, quest = true)
+
+    private fun ddPairs(vararg tags: String) = DriverPairs.from(TurnipReleases.Check(
+        tags.map { asset("$it.zip", it, false, DriverPairs.ddTurnip(it)).let { a ->
+            TurnipReleases.Asset(a.source, a.tag, a.name, a.url, a.size, false, a.label, a.sha256, a.pair, bundle = true) } },
+        emptyList(), emptyList(), 0L,
+    ))
+
+    @Test
+    fun questPinsDdTurnip011AndNeverANewerOne() {
+        val pairs = ddPairs("DD-Turnip-v0.1.2", "DD-Turnip-v0.1.1", "DD-Turnip-v0.1.0")
+        assertEquals(DriverPairs.ddTurnip("DD-Turnip-v0.1.1"), DriverPairs.recommendedKey(quest(), pairs))
+        assertEquals(DriverPairs.ddTurnip("DD-Turnip-v0.1.1"), DriverPairs.recommendedKey(quest(750), pairs))
+    }
+
+    @Test
+    fun questFallsBackWhenTheReleaseIsNotListed() {
+        assertEquals(DriverPairs.BANNER, DriverPairs.recommendedKey(quest(), emptyList()))
+        assertEquals(DriverPairs.BANNER, DriverPairs.recommendedKey(quest(), ddPairs("DD-Turnip-v0.1.2")))
+    }
+
+    @Test
+    fun otherDevicesAreUnaffectedByTheQuestPin() {
+        val pairs = ddPairs("DD-Turnip-v0.1.1")
+        assertEquals(DriverPairs.BANNER, DriverPairs.recommendedKey(gpu(740), pairs))
+        assertEquals(DriverPairs.ddTurnip("DD-Turnip-v0.1.1"), DriverPairs.recommendedKey(gpu(840), pairs))
+    }
+
+    @Test
+    fun questDetection() {
+        assertTrue(GpuInfo.isQuest("Oculus", "Quest 3"))
+        assertTrue(GpuInfo.isQuest("Oculus", "Quest 3S"))
+        assertTrue(GpuInfo.isQuest("Meta", "Quest 3"))
+        assertFalse(GpuInfo.isQuest("samsung", "SM-S918B"))
+        assertFalse(GpuInfo.isQuest("Oculus", "Rift"))
+        assertFalse(GpuInfo.isQuest(null, null))
+    }
 }
