@@ -5,6 +5,10 @@
   </picture>
 </p>
 
+
+*As apart of this QuestDeck project, it might not happen, but im going to try to bring SteamVR Support to this*
+
+
 DroidDeck brings the SteamOS experience to Android: Valve's Steam client in Big Picture on your Adreno handheld, with Windows games through Valve's ARM64 Proton.
 
 <p align="center"><a href="https://discord.gg/JRGAvawjsm"><img src="https://img.shields.io/badge/Discord-Join%20the%20community-5865F2?logo=discord&logoColor=white" alt="Join the DroidDeck Discord"></a></p>
