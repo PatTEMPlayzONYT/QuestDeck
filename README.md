@@ -9,8 +9,8 @@
 
 <p align="center">
   <a href="https://github.com/PatTEMPlayzONYT/QuestDeck/releases">
-    <img src="https://img.shields.io/github/downloads/PatTEMPlayzONYT/QuestDeck/total?label=Downloads&color=blue" alt="Total GitHub release downloads">
-  </a>
+  <img src="https://img.shields.io/github/downloads/PatTEMPlayzONYT/QuestDeck/total?label=Downloads&color=blue" alt="Total GitHub release downloads">
+</a>
   <img src="https://raw.githubusercontent.com/PatTEMPlayzONYT/QuestDeck/traffic-data/badge.svg" alt="QuestDeck repository views">
 </p>
 
