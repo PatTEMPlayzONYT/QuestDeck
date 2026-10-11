@@ -1,4 +1,6 @@
- <p align="center">
+# QuestDeck
+
+<p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="artwork/droiddeck-banner-dark.svg">
     <img alt="QuestDeck" src="artwork/droiddeck-banner-light.svg" width="100%">
@@ -9,61 +11,175 @@
   <a href="https://github.com/PatTEMPlayzONYT/QuestDeck/releases">
     <img src="https://img.shields.io/github/downloads/PatTEMPlayzONYT/QuestDeck/total?label=Downloads&color=blue" alt="Total GitHub release downloads">
   </a>
-  <img src="https://komarev.com/ghpvc/?username=PatTEMPlayzONYT&label=Profile%20Views&color=blue&style=flat" alt="GitHub profile views">
+ <img src="https://raw.githubusercontent.com/PatTEMPlayzONYT/QuestDeck/traffic-data/badge.svg" alt="QuestDeck repository views">
 </p>
 
-*As part of this QuestDeck project, it might not happen, but I'm going to try to bring SteamVR support to this.*
-
-QuestDeck is my Quest-focused fork of DroidDeck, aiming to bring the SteamOS experience to the Meta Quest 3 & 3S: Valve's Steam client in Big Picture, with Windows games through Valve's ARM64 Proton.
+QuestDeck is my Quest-focused fork of DroidDeck, aiming to bring a SteamOS-like experience to the Meta Quest 3 and Quest 3S: Valve's Steam client in Big Picture Mode, with Windows games through Valve's ARM64 Proton.
 
 <p align="center">
   <a href="https://discord.gg/JRGAvawjsm">
-    <img src="https://img.shields.io/badge/Discord-Join%20the%20community-5865F2?logo=discord&logoColor=white" alt="Join the DroidDeck Discord">
+    <img src="https://img.shields.io/badge/Discord-Join%20the%20community-5865F2?logo=discord&logoColor=white" alt="Join the Discord community">
   </a>
 </p>
 
 <p align="center">
-  <img src="docs/releases/media/0.2.0/launch-into-steam.gif" width="80%" alt="Tapping DroidDeck on the Android home screen and landing in Steam Big Picture">
+  <img src="docs/releases/media/0.2.0/launch-into-steam.gif" width="80%" alt="Launching into Steam Big Picture">
 </p>
 
-> Note: DroidDeck/QuestDeck does not have a stand-alone website. Do not click on any download links from websites claiming to be the DroidDeck team.
+> **Note:** QuestDeck does not have a standalone website. Download APKs only from the official [QuestDeck GitHub Releases](https://github.com/PatTEMPlayzONYT/QuestDeck/releases) page. Be careful with other websites claiming to be the QuestDeck team.
 
-## Requirements and install
+## Requirements and installation
 
-Use Android 9 or newer on a supported Adreno device (730 or newer, or 8xx). Adreno 6xx is experimental: DirectX 11 uses DXVK 2 and may run, and DirectX 12 games can still crash. Mali, Xclipse, PowerVR, and Adreno 710 are unsupported. No root is required.
+QuestDeck is based on DroidDeck and is intended for compatible Android devices. Compatibility on the Meta Quest 3 and Quest 3S depends on the runtime, drivers, and software configuration being used.
 
-Allow about 3 GB for the runtime and 1.1 GB more for the desktop and emulators. Install the APK from [QuestDeck Releases](https://github.com/PatTEMPlayzONYT/QuestDeck/releases), install the Linux runtime, then press **Play** and sign in. Steam downloads on first launch.
+The original project requirements are:
 
-Install **Desktop & apps** to use the desktop and emulators. The **Store** installs Linux apps and games from Flathub (ARM64 builds) with Flatpak, with additional options to install AppImages and set up scripts.
+- Android 9 or newer.
+- A supported Adreno GPU, generally Adreno 730 or newer, or Adreno 8xx.
+- Adreno 6xx devices are experimental. DirectX 11 games may run using DXVK 2, while DirectX 12 games can still crash.
+- Mali, Xclipse, PowerVR, and Adreno 710 GPUs are unsupported.
+- Root access is not required.
+- Allow approximately 3 GB for the runtime and an additional 1.1 GB for the desktop and emulators.
 
-**Stores** (Setup › Stores › "Show Stores in the rail") signs in to GOG, Epic Games and Amazon Games, browses their catalogs and libraries, downloads games into the Games storage and adds each one to the Steam client as a non-Steam game, so it launches through Proton like everything else. The cog on its chip row sets which tab a store opens on and the download speed tier.
+These are the underlying project's general requirements, not a guarantee that every device or game will work.
 
-Before Steam launches, you must turn off **Restrict child processes** in Developer options. If this option is not available in developer settings (Android 12 and 13 devices), first launch of Steam will present a "Fix it for me" button, which will help automate the setup process.
+### Installing QuestDeck
 
-## Build
+1. Open [QuestDeck Releases](https://github.com/PatTEMPlayzONYT/QuestDeck/releases).
+2. Download the APK variant you want to test.
+3. If you're unsure which variant to choose, start with **Standard**.
+4. Install the APK on your supported device.
+5. Install the Linux runtime when prompted.
+6. Press **Play** and sign in to Steam. Steam will download additional files on its first launch.
 
-Run `tools/build_local.sh` with Docker, Java 17, the Android SDK/NDK, Rust through rustup, GitHub CLI, Python 3, and `zstd` installed. It prepares the same native libraries, pinned components and audio sinks as CI, then checks the APK's assets, JNI exports and dependencies.
+QuestDeck is a work in progress. Features, compatibility, and performance may differ between builds and devices.
 
-The APK is at `app/build/outputs/apk/release/app-release.apk`. Set `DROIDDECK_PA13_SOURCE_DIR` to an existing PulseAudio 13.0 source directory to skip downloading it. Set `DROIDDECK_SIGNING_ENV` to a signing environment file to install over a release build; relative keystore paths resolve beside that file. To install on an attached device, run `tools/deploy_local.sh`.
+### Desktop and applications
 
-After preparation, ordinary `./gradlew :app:assembleRelease` builds can reuse the verified inputs. If native sources, component pins or staged files change, packaging stops with instructions to rerun the helper. Generated audio stays under `app/build/`; the tracked base bundle is never modified.
+Install **Desktop & apps** to access the desktop and emulators.
 
-`./gradlew -PskipRust=true :app:testDebugUnitTest` needs no native preparation. For an APK without store engines, use `DROIDDECK_SKIP_RUST=1 tools/build_local.sh`; it omits cached engine libraries too.
+The **Store** can install Linux applications and games from Flathub using Flatpak when ARM64 builds are available. Additional options include AppImages and scripts.
 
-Run the helper and preload regression suite with `bash tools/test_local.sh`. On macOS it runs in Linux through Docker, matching the helpers' runtime and CI instead of compiling Linux preloads against macOS headers.
+### Game stores
 
-## Limits
+Enable **Show Stores in the rail** under Setup → Stores to access supported store integrations.
 
-Compatibility and performance vary by device; hardware validation is limited. Desktop compositing uses software rendering. Firefox sandboxing is reduced under proot.
+The original DroidDeck functionality supports signing in to GOG, Epic Games, and Amazon Games, browsing catalogs and libraries, downloading games into Games storage, and adding them to Steam as non-Steam games.
 
-Logs are kept app-private (`files/logs/`, the last 30 sessions); **Share logs** packs the newest session, with the stores and tool logs, into one scrubbed zip.
+Availability and functionality depend on the particular integration and build.
 
-## Credits and licence
+### Android developer settings
 
-GPL-3.0. Runtime, shim, input, and controller work build on WinNative and Bannerlator (maxjivi05).
+Before Steam launches, you may need to disable **Restrict child processes** in Developer options.
 
-LSFG frame generation is from the work of Camille LaVey and the [Eden](https://eden-emu.dev) emulator project, following [lsfg-vk](https://github.com/PancakeTAS/lsfg-vk), ported to WinNative and DroidDeck by [@maxjivi05](https://github.com/maxjivi05); it needs your own copy of [Lossless Scaling](https://store.steampowered.com/app/993090/) and ships none of its shaders.
+On some Android 12 and Android 13 devices, this option may not appear in Developer settings. The first Steam launch may display a **Fix it for me** button to help automate the setup.
 
-x86 AppImages, and any whose own runtime cannot unpack them, are unpacked with [uruntime](https://github.com/VHSgunzo/uruntime) by VHSgunzo (MIT), shipped unmodified with its licence. See [LICENSE](LICENSE).
+## Community and support
 
-Steam and Proton belong to Valve Corporation; this project is not affiliated with Valve.
+Join the [Discord community](https://discord.gg/JRGAvawjsm) for help, preview builds, and device reports.
+
+When reporting a bug, include the device model, QuestDeck version, APK variant, and a description of what happened.
+
+If possible, attach the ZIP generated by **Share logs** from Setup or the session drawer. Logs can help identify runtime, driver, and launch problems.
+
+## Building from source
+
+The project uses Android tooling and native components. The original local build helper requires:
+
+- Docker
+- Java 17
+- Android SDK and NDK
+- Rust through rustup
+- GitHub CLI
+- Python 3
+- `zstd`
+
+Run the local build helper from the repository root:
+
+```bash
+tools/build_local.sh
+```
+
+The helper prepares native libraries, pinned components, and audio sinks used by the build and checks APK assets, JNI exports, and dependencies.
+
+The resulting APK is located at:
+
+```text
+app/build/outputs/apk/release/app-release.apk
+```
+
+### Build options
+
+Set `DROIDDECK_PA13_SOURCE_DIR` to an existing PulseAudio 13.0 source directory to skip downloading that source.
+
+Set `DROIDDECK_SIGNING_ENV` to a signing environment file when you need to install over an existing release build. Relative keystore paths resolve relative to that file.
+
+To install on an attached device, run:
+
+```bash
+tools/deploy_local.sh
+```
+
+After preparation, regular Gradle release builds can reuse the verified inputs:
+
+```bash
+./gradlew :app:assembleRelease
+```
+
+If native sources, component pins, or staged files change, packaging may require running the helper again.
+
+Generated audio files remain under `app/build/`; the tracked base bundle is not modified.
+
+To run unit tests without native preparation:
+
+```bash
+./gradlew -PskipRust=true :app:testDebugUnitTest
+```
+
+To build an APK without store engines:
+
+```bash
+DROIDDECK_SKIP_RUST=1 tools/build_local.sh
+```
+
+This also omits cached engine libraries.
+
+To run the helper and preload regression suite:
+
+```bash
+bash tools/test_local.sh
+```
+
+On macOS, the test helper runs in Linux through Docker to match the helper's runtime and CI environment.
+
+### Signing and GitHub Actions
+
+Release signing must use the intended release keystore and matching signing configuration. Keep keystores, passwords, private keys, and tokens out of source control.
+
+QuestDeck uses GitHub Actions for automated builds and release-related tasks. Some upstream publishing steps may not apply to this fork.
+
+## Known limitations
+
+- Compatibility and performance vary by device, driver, runtime, and game.
+- Hardware validation is limited.
+- Desktop compositing uses software rendering.
+- Firefox sandboxing is reduced under proot.
+- Some games may fail to launch or perform poorly.
+- Driver and APK variant differences may affect compatibility.
+- QuestDeck is experimental software; features may change between releases.
+
+Logs are stored privately within the app under `files/logs/`, with the most recent 30 sessions retained. **Share logs** packages the newest session, store logs, and tool logs into a scrubbed ZIP.
+
+## Credits and licensing
+
+QuestDeck is based on [DroidDeck](https://github.com/Droid-Deck/DroidDeck) and builds on work from its upstream project and other open-source projects.
+
+The project is licensed under **GPL-3.0**. See [LICENSE](LICENSE).
+
+Runtime, shim, input, and controller work build on WinNative and Bannerlator by maxjivi05.
+
+LSFG frame generation builds on work by Camille LaVey and the [Eden emulator project](https://eden-emu.dev), following [lsfg-vk](https://github.com/PancakeTAS/lsfg-vk). It was ported to WinNative and DroidDeck by [@maxjivi05](https://github.com/maxjivi05). LSFG requires your own copy of [Lossless Scaling](https://store.steampowered.com/app/993090/); its shaders are not included.
+
+x86 AppImages and AppImages that cannot unpack their own runtime are handled using [uruntime](https://github.com/VHSgunzo/uruntime) by VHSgunzo, licensed under MIT and shipped unmodified with its license.
+
+Steam and Proton belong to Valve Corporation. QuestDeck is an independent project and is not affiliated with, endorsed by, or sponsored by Valve.
