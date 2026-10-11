@@ -623,7 +623,7 @@ jobs:
   # DISCORD_BUILDS_WEBHOOK is the channel's webhook URL.
   announce:
     needs: [build, sign]
-    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    if: ${{ github.repository == 'Droid-Deck/DroidDeck' && github.event_name != 'pull_request' && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
@@ -753,6 +753,6 @@ jobs:
 
   catalog:
     needs: announce
-    if: ${{ always() && github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && needs.announce.result != 'skipped' }}
+    if: ${{ always() && github.repository == 'Droid-Deck/DroidDeck' && github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && needs.announce.result != 'skipped' }}
     uses: ./.github/workflows/update-catalog.yml
     secrets: inherit
