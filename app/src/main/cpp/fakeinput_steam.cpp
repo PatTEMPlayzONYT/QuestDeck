@@ -2921,6 +2921,18 @@ static bool wait_snapshot(std::shared_ptr<FakeController> fake,
   }
 }
 
+// What this hook does not own goes to the next ioctl in the chain, not straight to the kernel.
+// The session preloads libblsession.so ahead of this library and Proton appends more after it
+// (LD_PRELOAD=libblsession.so:libfakeinput.so:...), so a raw syscall here skipped every library
+// listed later: a KGSL shim never saw its ioctls and a debugging preload went silent (issue #245).
+// Every other hook in this file forwards through RTLD_NEXT.
+static int forward_ioctl(int fd, ioctl_request_t op, void *argp) {
+  typedef int (*next_ioctl_t)(int, ioctl_request_t, ...);
+  static auto next = reinterpret_cast<next_ioctl_t>(dlsym(RTLD_NEXT, "ioctl"));
+  if (next != nullptr) return next(fd, op, argp);
+  return syscall(SYS_ioctl, fd, op, argp);
+}
+
 EXPORT int ioctl(int fd, ioctl_request_t op, ...) {
   va_list va;
   void *argp;
@@ -2932,7 +2944,7 @@ EXPORT int ioctl(int fd, ioctl_request_t op, ...) {
   // The lock must not be held across the passthrough: binder's transport is a
   // blocking ioctl(BINDER_WRITE_READ), so a parked binder pool thread would own
   // controller_mutex() for as long as it waits and deadlock every other ioctl.
-  if (!watched(fd)) return syscall(SYS_ioctl, fd, op, argp);
+  if (!watched(fd)) return forward_ioctl(fd, op, argp);
   std::unique_lock<std::recursive_mutex> guard(controller_mutex());
   auto maker = uinput_map().find(fd);
   if (maker != uinput_map().end()) return ioctl_uinput(*maker->second, op, argp);
@@ -2949,7 +2961,7 @@ EXPORT int ioctl(int fd, ioctl_request_t op, ...) {
   auto controller = controller_map().find(fd);
   if (controller == controller_map().end()) {
     guard.unlock();
-    return syscall(SYS_ioctl, fd, op, argp);
+    return forward_ioctl(fd, op, argp);
   }
 
   int type = (op >> 8 & 0xFF);
@@ -3145,7 +3157,7 @@ EXPORT int ioctl(int fd, ioctl_request_t op, ...) {
   } else {
     Logger::log("Unhandled evdev ioctl, type %d number %d\n", type, number);
     guard.unlock();
-    return syscall(SYS_ioctl, fd, op, argp);
+    return forward_ioctl(fd, op, argp);
   }
 }
 
