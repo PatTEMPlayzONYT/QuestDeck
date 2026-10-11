@@ -64,6 +64,7 @@ import com.droiddeck.launcher.session.PerfHud
 import com.droiddeck.launcher.session.PerfMode
 import com.droiddeck.launcher.session.SteamRepair
 import com.droiddeck.launcher.session.GameEnvironmentStore
+import com.droiddeck.launcher.session.CompositorEnv
 import com.droiddeck.launcher.session.SessionPrefs
 import com.droiddeck.launcher.session.SessionEvents
 import com.droiddeck.launcher.session.SessionArtifacts
@@ -1066,6 +1067,11 @@ class SessionActivity : ComponentActivity(), SurfaceHolder.Callback {
                 on, on,
             )
             Log.i(TAG, "hdr: " + (if (on) "on" else if (wanted) "wanted but ${probe.reason}" else "off") + " · display ${probe.formats.ifEmpty { "SDR" }}")
+            // DROIDDECK_WAYLAND_UBWC=0|1 in droiddeck-env: whether the compositor offers games
+            // compressed (UBWC) buffers beside linear ones. It was documented but never wired up
+            // (nativeSetUbwc had no caller), so there was no way to tell a UBWC layout mismatch
+            // from any other cause of a garbled picture. Without a line the default (on) stands.
+            CompositorEnv.ubwc(this)?.let { WaylandCompositor.nativeSetUbwc(it) }
         }
         CompositorHost.startOrAttach(
             holder.surface, runtimeDir.path,

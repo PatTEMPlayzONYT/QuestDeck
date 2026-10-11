@@ -21,7 +21,8 @@ int vk_loader_open(const char *driver_path, const char *library_name,
         if (asprintf(&tmpdir, "%stemp", driver_path) < 0) tmpdir = NULL;
         if (tmpdir) mkdir(tmpdir, S_IRWXU | S_IRWXG);
         g_handle = adrenotools_open_libvulkan(
-            RTLD_LOCAL | RTLD_NOW, ADRENOTOOLS_DRIVER_CUSTOM, tmpdir,
+            RTLD_LOCAL | RTLD_NOW,
+            ADRENOTOOLS_DRIVER_CUSTOM | ADRENOTOOLS_DRIVER_KGSL_GPUOBJ, tmpdir,
             native_lib_dir, driver_path, library_name, NULL, NULL);
         free(tmpdir);
         __android_log_print(g_handle ? ANDROID_LOG_INFO : ANDROID_LOG_ERROR, TAG,

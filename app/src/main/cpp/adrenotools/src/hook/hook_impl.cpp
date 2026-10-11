@@ -86,6 +86,15 @@ __attribute__((visibility("default"))) void *hook_android_dlopen_ext(const char 
         LOGI("hook_android_dlopen_ext: applied libfile_redirect_hook");
     }
 
+    // Not fatal: without it the driver still loads, and only a kernel that denies the legacy KGSL
+    // allocation ioctls (Horizon OS) notices.
+    if (hook_params->featureFlags & ADRENOTOOLS_DRIVER_KGSL_GPUOBJ) {
+        if (linkernsbypass_namespace_dlopen("libkgsl_gpuobj_hook.so", RTLD_GLOBAL, driverNs))
+            LOGI("hook_android_dlopen_ext: applied libkgsl_gpuobj_hook");
+        else
+            LOGI("hook_android_dlopen_ext: libkgsl_gpuobj_hook not applied: %s", dlerror());
+    }
+
     // Use our new namespace to load the vulkan driver
     auto newExtinfo{*extinfo};
     newExtinfo.library_namespace = driverNs;

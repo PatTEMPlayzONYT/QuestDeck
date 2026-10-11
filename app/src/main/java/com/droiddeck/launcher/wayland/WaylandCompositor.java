@@ -269,7 +269,9 @@ public final class WaylandCompositor {
     /** Compressed (UBWC) game buffers: the compositor advertises DRM_FORMAT_MOD_QCOM_COMPRESSED next to
      *  LINEAR on zwp_linux_dmabuf_v1 for every format its driver can import that way, so the game's
      *  Turnip allocates compressed swapchain images instead of resolving every frame to a linear copy.
-     *  Default on; DROIDDECK_WAYLAND_UBWC=0 in the container's environment variables turns it off (A/B).
+     *  Default on; DROIDDECK_WAYLAND_UBWC=0 in droiddeck-env (the session's extra-environment file;
+     *  the compositor is in the app process, so the guest/container environment does not reach it)
+     *  turns it off (A/B).
      *  Set before the compositor starts. */
     public static native void nativeSetUbwc(boolean on);
 

@@ -14,6 +14,15 @@ set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-z,max-page-size=16384
 
 add_subdirectory(adrenotools)
 
+# Loaded by adrenotools into the app's Turnip namespace: KGSL's legacy GPU-memory ioctls answered
+# with the GPUOBJ family where Horizon OS's SELinux policy denies them (issue #245). Global, so the
+# driver's ioctl import resolves to it; it is looked up by name in the native library directory.
+add_library(kgsl_gpuobj_hook SHARED kgsl_gpuobj_hook.c)
+target_compile_options(kgsl_gpuobj_hook PRIVATE -Wall -Wextra)
+target_link_options(kgsl_gpuobj_hook PRIVATE -z global)
+target_link_libraries(kgsl_gpuobj_hook log)
+set_target_properties(kgsl_gpuobj_hook PROPERTIES C_VISIBILITY_PRESET hidden)
+
 # DXVK's DXBC->SPIR-V translator (zlib licence), vendored under thirdparty/dxbc from the same
 # subset upstream lsfg-vk uses. Native LSFG frame generation needs it: the Lossless Scaling
 # shader chain is DXBC in every build downloadable from Steam.
