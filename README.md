@@ -1,5 +1,10 @@
 # QuestDeck
-⚠️There have been some reported bugs, So until I can review, and reproduce the bugs, I cannot guarantee, that everything is currently working.⚠️
+
+> [!IMPORTANT]
+> **QuestDeck has moved to [QuestFrame](https://github.com/questframevr/QuestFrame).** It's the same project with a new name and a new home. New releases (starting with 0.4.0), the source code and bug reports are all there now. This repository stays up so the older QuestDeck releases remain available, but it won't get updates.
+>
+> If you already have QuestDeck installed, you can install QuestFrame right over it. Your settings and Steam login carry over.
+
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="artwork/droiddeck-banner-dark.svg">
