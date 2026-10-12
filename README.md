@@ -1,5 +1,5 @@
 # QuestDeck
-
+⚠️There have been some reported bugs, So until I can review, and reproduce the bugs, I cannot guarantee, that everything is currently working.⚠️
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="artwork/droiddeck-banner-dark.svg">
